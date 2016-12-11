@@ -10,7 +10,7 @@ if (!WIT_TOKEN) {
 const FB_PAGE_TOKEN = "EAAJDkEuekfwBAIJ7mwVVIp0ZCpR9omiHniBv5CZAl249aIQZB88aAVxM4Vw5qwZBktZA7JBMrwdOreURaqg0uh6Kmzz3o457dWV7z3N4gg8z2QDeIgcYtuLZCvPknitbpItC6P6ZBA4A6mnQZB5vZAxk4oz6GtHqeriZAZCvdvtfOKpBQZDZD";
 const APP_SECRET="f644ed06c3fdfbc110d68cd573ef98d9";
 var FB_VERIFY_TOKEN = "iamthebest";
-var SERVER_URL="https://chooseyourfood.herokuapp.com";
+var SERVER_URL="https://031c8faf.ngrok.io";
 if (!FB_VERIFY_TOKEN) {
   FB_VERIFY_TOKEN = "iamthebest";
 }

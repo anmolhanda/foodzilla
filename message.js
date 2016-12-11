@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('underscore');
 // See the Send API reference
 // https://developers.facebook.com/docs/messenger-platform/send-api-reference
 const request = require('request');
@@ -183,52 +184,48 @@ function sendPayMessage(recipientId) {
         "type": "template",
         "payload": {
           "template_type": "receipt",
-          "recipient_name": "Stephane Crozatier",
+          "recipient_name": "Anmol Handa",
           "order_number": "12345678902",
-          "currency": "USD",
-          "payment_method": "Visa 2345",
-          "order_url": "http://petersapparel.parseapp.com/order?order_id=123456",
-          "timestamp": "1428444852",
+          "merchant_name": "Oasis",
+          "currency": "INR",
+          "payment_method": "Card",
+          "timestamp": new Date().getTime,
           "elements": [
             {
-              "title": "Classic White T-Shirt",
-              "subtitle": "100% Soft and Luxurious Cotton",
+              "title": "Rice",
+              "subtitle": "Jeera Rice with kesar",
               "quantity": 2,
-              "price": 50,
-              "currency": "USD",
-              "image_url": "http://petersapparel.parseapp.com/img/whiteshirt.png"
+              "price": 100,
+              "currency": "INR",
+              "image_url": "http://www.pachd.com/free-images/food-images/korean-bbq-01.jpg"
             },
             {
-              "title": "Classic Gray T-Shirt",
-              "subtitle": "100% Soft and Luxurious Cotton",
-              "quantity": 1,
-              "price": 25,
-              "currency": "USD",
-              "image_url": "http://petersapparel.parseapp.com/img/grayshirt.png"
+              "title": "Veg Curry",
+              "subtitle": "Preparation in Hyderabadi Way",
+              "quantity": 2,
+              "price": 120,
+              "currency": "INR",
+              "image_url": "http://www.pachd.com/free-images/food-images/korean-bbq-01.jpg"
             }
           ],
           "address": {
-            "street_1": "1 Hacker Way",
-            "street_2": "",
-            "city": "Menlo Park",
-            "postal_code": "94025",
-            "state": "CA",
-            "country": "US"
+            "street_1": "31/1, Bhoomika Layout",
+            "street_2": "Pattangere",
+            "city": "Raja Rajeshwari Nagar",
+            "postal_code": "560098",
+            "state": "Karanataka",
+            "country": "India"
           },
           "summary": {
-            "subtotal": 75.00,
-            "shipping_cost": 4.95,
-            "total_tax": 6.19,
-            "total_cost": 56.14
+            "subtotal": 440.00,
+            "shipping_cost": 20.00,
+            "total_tax": 50.00,
+            "total_cost": 510.00
           },
           "adjustments": [
             {
               "name": "New Customer Discount",
-              "amount": 20
-            },
-            {
-              "name": "$10 Off Coupon",
-              "amount": 10
+              "amount": 100.00
             }
           ]
         }
@@ -237,6 +234,53 @@ function sendPayMessage(recipientId) {
   }
   callSendAPI(messageData);
 };
+
+/*
+* send booking preview
+*/
+
+// function sendcheckinMessage(recipientId) {
+//   var messageData = {
+//     "recipient": {
+//       "id": recipientId
+//     },
+//     "message": {
+//       "attachment": {
+//         "type": "template",
+//         "payload": {
+//           "template_type": "airline_checkin",
+//           "intro_message": "Booking Confirmation Message",
+//           "locale": "en_US",
+//           "pnr_number": "1001234",
+//           "flight_info": [
+//             {
+//               "flight_number": "f001",
+//               "departure_airport": {
+//                 "airport_code": "SFO",
+//                 "city": "San Francisco",
+//                 "terminal": "T4",
+//                 "gate": "G8"
+//               },
+//               "arrival_airport": {
+//                 "airport_code": "SEA",
+//                 "city": "Seattle",
+//                 "terminal": "T4",
+//                 "gate": "G8"
+//               },
+//               "flight_schedule": {
+//                 "boarding_time": "2016-01-05T15:05",
+//                 "departure_time": "2016-01-05T15:45",
+//                 "arrival_time": "2016-01-05T17:30"
+//               }
+//             }
+//           ],
+//           "checkin_url": "https:\/\/www.airline.com\/check-in"
+//         }
+//       }
+//   }
+// }
+// callSendAPI(messageData);
+// };
 
 
 /*
@@ -249,15 +293,25 @@ function sendGenericMessage(recipientId, message, product) {
   for (var i = 0; i < message.length; i++) {
     var element = {};
     element.title = message[i].name;
-    element.subtitle = message[i].description;
+    element.subtitle = "Rating : " + message[i].rating;
     element.image_url = "http://www.pachd.com/free-images/food-images/korean-bbq-01.jpg";
     // element.item_url=message[i].rating;
     var buttons = [];
     var button = {};
     button.type = "web_url";
     button.url = "https://www.zomato.com/bangalore/brundhavan-biriyani-house-rajarajeshwari-nagar";
-    button.title = "Rating : "+message[i].rating;
+    var speciality = _.findWhere(message[i].speciality, { item: product });
+    button.title = product + " : " + speciality.rating + "/5";
     buttons.push(button);
+    var button2 = {
+      "type": "postback",
+      "title": "Rate item",
+      "payload": JSON.stringify({
+        product: product,
+        restaurant: message[i].name
+      })
+    };
+    buttons.push(button2);
     element.buttons = buttons;
     elements.push(element);
   }
@@ -586,6 +640,7 @@ module.exports = {
   sendReceiptMessage: sendReceiptMessage,
   sendQuickReply: sendQuickReply,
   sendReadReceipt: sendReadReceipt,
+  // sendcheckinMessage:sendcheckinMessage,
   sendTypingOn: sendTypingOn,
   sendTypingOff: sendTypingOff,
   sendAccountLinking: sendAccountLinking,

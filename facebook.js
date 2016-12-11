@@ -70,33 +70,54 @@ const actions = {
     }
     else
       finalText = text;
-    if (context.demand != undefined) {
-      if (context.demand != false) {
-        // console.log("context name is", context.name);
-        messageTypes.sendListMessage(context._fbid_, context.demand);
-      } else {
-        finalText = "we couldn't find any non available products in your area which people want "
-        messageTypes.sendTextMessage(context._fbid_, finalText);
-      }
-    }
-    else
-      if (firstEntityValue(entities, 'stop') != undefined) {
-
-        messageTypes.sendTextMessage(context._fbid_, ":)");
+    if (context.rating != undefined) {
+      var ratingProduct = JSON.parse(context.rating);
+      console.log("request is", ratingProduct);
+      restaurantService.updateRating(request.text, ratingProduct.restaurant, ratingProduct.product).then(function(updatedRating){
+        messageTypes.sendTextMessage(context._fbid_,"Rating added successfully. Thanks for your valuable review :)");
+        console.log("done in rating product");
+        return Promise.resolve();
+      })
+    } else
+      if (context.demand != undefined) {
+        if (context.demand != false) {
+          // console.log("context name is", context.name);
+          messageTypes.sendListMessage(context._fbid_, context.demand);
+          return Promise.resolve();
+        } else {
+          finalText = "we couldn't find any non available products in your area which people want "
+          messageTypes.sendTextMessage(context._fbid_, finalText);
+          return Promise.resolve();
+        }
       }
       else
-        if (context.productShops) {
-          messageTypes.sendGenericMessage(context._fbid_, context.productShops, context.product);
-          delete context.productNotFound;
+        if (firstEntityValue(entities, 'stop') != undefined) {
+
+          messageTypes.sendTextMessage(context._fbid_, ":)");
+          return Promise.resolve();
         }
         else
-          if (context.productNotFound) {
-            messageTypes.sendTextMessage(context._fbid_, finalText);
-            delete context.productShops;
+          if (context.productShops) {
+            messageTypes.sendGenericMessage(context._fbid_, context.productShops, context.product);
+            delete context.productNotFound;
+            return Promise.resolve();
           }
           else
-            messageTypes.sendTextMessage(context._fbid_, finalText);
-    return Promise.resolve();
+            if (context.productNotFound) {
+              messageTypes.sendTextMessage(context._fbid_, finalText);
+              delete context.productShops;
+              return Promise.resolve();
+            }
+            else
+              if (request.text == "Postback called") {
+                messageTypes.sendTextMessage(context._fbid_, "Give your rating for the speciality you choose");
+                return Promise.resolve();
+              } else {
+                  messageTypes.sendTextMessage(context._fbid_, finalText);
+                  return Promise.resolve();
+              }
+              
+    
   },
   fetchProductInfo({ context, entities }) {
     return new Promise(function (resolve, reject) {
@@ -216,7 +237,8 @@ function receivedMessage(event) {
   var recipientID = event.recipient.id;
   var timeOfMessage = event.timestamp;
   var message = event.message;
-
+  if (event.postback != undefined)
+    var payload = event.postback.payload;
   console.log("Received message for user %d and page %d at %d with message:",
     senderID, recipientID, timeOfMessage);
   console.log("Message is---------------------------", JSON.stringify(message));
@@ -250,41 +272,53 @@ function receivedMessage(event) {
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
     switch (messageText) {
-      case 'image':
-        messageTypes.sendImageMessage(senderID);
-        break;
+      // case 'image':
+      //   messageTypes.sendImageMessage(senderID);
+      //   break;
 
-      case 'gif':
-        messageTypes.sendGifMessage(senderID);
-        break;
+      // case 'gif':
+      //   messageTypes.sendGifMessage(senderID);
+      //   break;
 
-      case 'audio':
-        messageTypes.sendAudioMessage(senderID);
-        break;
+      // case 'audio':
+      //   messageTypes.sendAudioMessage(senderID);
+      //   break;
 
-      case 'video':
-        messageTypes.endVideoMessage(senderID);
-        break;
+      // case 'video':
+      //   messageTypes.endVideoMessage(senderID);
+      //   break;
 
-      case 'file':
-        messageTypes.sendFileMessage(senderID);
-        break;
+      // case 'file':
+      //   messageTypes.sendFileMessage(senderID);
+      //   break;
 
-      case 'button':
-        messageTypes.sendButtonMessage(senderID);
-        break;
+      // case 'button':
+      //   messageTypes.sendButtonMessage(senderID);
+      //   break;
 
-      case 'pay':
+      case 'booking details':
         messageTypes.sendPayMessage(senderID);
         break;
 
-      // case 'generic':
-      //   messageTypes.sendGenericMessage(senderID);
+       case 'booking':
+        messageTypes.sendPayMessage(senderID);
+        break;  
+       
+       case 'book':
+        messageTypes.sendPayMessage(senderID);
+        break; 
+  
+      // case 'booking':
+      //   messageTypes.sendcheckinMessage(senderID);
       //   break;
 
-      case 'receipt':
-        messageTypes.sendReceiptMessage(senderID);
-        break;
+      // case 'book':
+      //   messageTypes.sendcheckinMessage(senderID);
+      //   break;  
+
+      // case 'receipt':
+      //   messageTypes.sendReceiptMessage(senderID);
+      //   break;
 
       case 'quick reply':
         messageTypes.sendQuickReply(senderID);
@@ -326,16 +360,25 @@ function receivedMessage(event) {
                 console.log("error is", error);
             });
           }
+          if (payload != undefined) {
+            console.log("inside payload check ", payload);
+            context["rating"] = payload;
+            // messageTypes.sendTextMessage(senderID, "Give rating out of 5 for the speciality item");
+          }else
+                if(context.rating!=undefined){
+                  delete context.rating;
+                }          
           // Based on the session state, you might want to reset the session.
           // This depends heavily on the business logic of your bot.
           // Example:
-          if (context['done']) {
+          if (context['done']!=undefined) {
             console.log("done");
             delete context.productShops;
             delete context.product;
             delete context.productNotFound;
             delete context.done;
             delete context.demand;
+            delete context.rating;  
             // delete sessions[sessionId];
           }
           // Updating the user's current session state
@@ -388,17 +431,19 @@ function receivedPostback(event) {
   var senderID = event.sender.id;
   var recipientID = event.recipient.id;
   var timeOfPostback = event.timestamp;
-
+  console.log("event in postback is", event);
   // The 'payload' param is a developer-defined field which is set in a postback 
   // button for Structured Messages. 
   var payload = event.postback.payload;
 
   console.log("Received postback for user %d and page %d with payload '%s' " +
     "at %d", senderID, recipientID, payload, timeOfPostback);
-
+  event.message = {};
+  event.message.text = "Postback called";
   // When a postback is called, we'll send a message back to the sender to 
   // let them know it was successful
-  messageTypes.sendTextMessage(senderID, "Postback called");
+  // messageTypes.sendTextMessage(senderID, "Postback called");
+  receivedMessage(event);
 }
 
 /*

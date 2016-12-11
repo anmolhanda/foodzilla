@@ -7,15 +7,18 @@ const restaurant1 = {
     "imageLink": "https://www.zomato.com/photos/pv-res-60372-r_MDg1NTg5NTMzNT",
     "speciality": [{
         "item": "Dal Makhani",
-        "rating": 4.5
+        "rating": 4.5,
+        "count":1
     },
         {
             "item": "Veg Biryani",
-            "rating": 4.0
+            "rating": 4.0,
+            "count":1
         },
     ],
     "created_at": new Date(),
-    "rating": 4.5
+    "rating": 4.5,
+    "count":1
 
 };
 const restaurant2 = {
@@ -25,15 +28,18 @@ const restaurant2 = {
     "imageLink": "https://www.zomato.com/photos/pv-res-60366-r_NjcwNTM5NjY0MD",
     "speciality": [{
         "item": "Soup",
-        "rating": 4.5
+        "rating": 4.5,
+        "count":1
     },
         {
             "item": "Veg Biryani",
-            "rating": 5.0
+            "rating": 5.0,
+            "count":1
         },
         {
             "item": "Chopseuy",
-            "rating": 4.0
+            "rating": 4.0,
+            "count":1
         },
     ],
     "created_at": new Date(),
