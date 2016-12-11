@@ -24,11 +24,11 @@ const PORT = process.env.PORT || 5000;
 
 // Starting our webserver and putting it all together
 const app = express();
-//app.use(bodyParser.json({ verify: verifyRequestSignature }));
+app.use(bodyParser.json({ verify: verifyRequestSignature }));
 app.set('port', PORT);
-// app.set('view engine', 'ejs');
+app.set('view engine', 'ejs');
 app.listen(app.get('port'));
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 console.log("I'm wating for you @" + PORT);
 
 // index. Let's say something fun
@@ -49,6 +49,7 @@ app.get('/webhook', (req, res) => {
     res.sendStatus(400);
   }
 });
+
 
 /*
  * All callbacks for Messenger are POST-ed. They will be sent to the same
