@@ -73,8 +73,8 @@ const actions = {
     if (context.rating != undefined) {
       var ratingProduct = JSON.parse(context.rating);
       console.log("request is", ratingProduct);
-      restaurantService.updateRating(request.text, ratingProduct.restaurant, ratingProduct.product).then(function(updatedRating){
-        messageTypes.sendTextMessage(context._fbid_,"Rating added successfully. Thanks for your valuable review :)");
+      restaurantService.updateRating(request.text, ratingProduct.restaurant, ratingProduct.product).then(function (updatedRating) {
+        messageTypes.sendTextMessage(context._fbid_, "Rating added successfully. Thanks for your valuable review :)");
         console.log("done in rating product");
         return Promise.resolve();
       })
@@ -113,11 +113,11 @@ const actions = {
                 messageTypes.sendTextMessage(context._fbid_, "Give your rating for the speciality you choose");
                 return Promise.resolve();
               } else {
-                  messageTypes.sendTextMessage(context._fbid_, finalText);
-                  return Promise.resolve();
+                messageTypes.sendTextMessage(context._fbid_, finalText);
+                return Promise.resolve();
               }
-              
-    
+
+
   },
   fetchProductInfo({ context, entities }) {
     return new Promise(function (resolve, reject) {
@@ -300,14 +300,14 @@ function receivedMessage(event) {
         messageTypes.sendPayMessage(senderID);
         break;
 
-       case 'booking':
+      case 'booking':
         messageTypes.sendPayMessage(senderID);
-        break;  
-       
-       case 'book':
+        break;
+
+      case 'book':
         messageTypes.sendPayMessage(senderID);
-        break; 
-  
+        break;
+
       // case 'booking':
       //   messageTypes.sendcheckinMessage(senderID);
       //   break;
@@ -364,21 +364,21 @@ function receivedMessage(event) {
             console.log("inside payload check ", payload);
             context["rating"] = payload;
             // messageTypes.sendTextMessage(senderID, "Give rating out of 5 for the speciality item");
-          }else
-                if(context.rating!=undefined){
-                  delete context.rating;
-                }          
+          } else
+            if (context.rating != undefined) {
+              delete context.rating;
+            }
           // Based on the session state, you might want to reset the session.
           // This depends heavily on the business logic of your bot.
           // Example:
-          if (context['done']!=undefined) {
+          if (context['done'] != undefined) {
             console.log("done");
             delete context.productShops;
             delete context.product;
             delete context.productNotFound;
             delete context.done;
             delete context.demand;
-            delete context.rating;  
+            delete context.rating;
             // delete sessions[sessionId];
           }
           // Updating the user's current session state

@@ -294,7 +294,7 @@ function sendGenericMessage(recipientId, message, product) {
     var element = {};
     element.title = message[i].name;
     element.subtitle = "Rating : " + message[i].rating;
-    element.image_url = "http://www.pachd.com/free-images/food-images/korean-bbq-01.jpg";
+    element.image_url = message[i].imageLink;
     // element.item_url=message[i].rating;
     var buttons = [];
     var button = {};
