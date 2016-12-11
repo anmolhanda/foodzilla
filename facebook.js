@@ -9,7 +9,6 @@ const messageTypes = require('./message.js');
 var titleCase = require('title-case');
 var restaurantService = require('./services/restaurant.service.js');
 var productService = require('./services/product.service.js');
-// const bot = require('./bot.js');
 const Wit = require('node-wit').Wit;
 const interactive = require('node-wit').interactive;
 
