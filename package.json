@@ -1,14 +1,14 @@
 {
-  "name": "Wit-Facebook",
+  "name": "Foodzilla",
   "version": "1.0.0",
-  "description": "Simple Wit-Facebook",
+  "description": "Simple Food prediction bot",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "bot": "node bot.js",
     "test": "jest"
   },
-  "author": "",
+  "author": "Anmol Handa",
   "license": "MIT",
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
@@ -36,7 +36,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hunkim/Wit-Facebook.git"
+    "url": "https://github.com/anmolhanda/foodzilla"
   },
   "bugs": {
     "url": "https://github.com/hunkim/Wit-Facebook/issues"
