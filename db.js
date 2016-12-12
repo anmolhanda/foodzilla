@@ -1,11 +1,11 @@
 var mongoose= require("mongoose");
-// mongoose.connection.dropDatabase(function(err, result) {
-//     console.log("removing database");
-//     require("./restaurant.script");
-// });
+mongoose.connection.dropDatabase(function(err, result) {
+    console.log("removing database");
+    require("./restaurant.script");
+});
 
 // var dbURI='mongodb://localhost/foodzilla';
-var dbURI="mongodb://anmolhanda:anmolhanda93@ds127978.mlab.com:27978/foodzilla"
+var dbURI="mongodb://localhost:27017/foodzilla"
 module.exports.connect=mongoose.connect(dbURI);
 
 

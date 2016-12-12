@@ -9,7 +9,8 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const crypto = require('crypto');
-
+var https = require('https');
+var fs = require('fs');
 // get Bot, const, and Facebook API
 // const bot = require('./bot.js');
 const Config = require('./const.js');
@@ -18,18 +19,32 @@ var db=require("./db");
 // Setting up our bot
 // const wit = bot.getWit();
 
+//certificates
+var options = {
+  key: fs.readFileSync('./foodzilla.key'),
+  cert: fs.readFileSync('./foodzilla.crt')
+};
+
+var serverPort = 443;
+
 // Webserver parameter
-const PORT = process.env.PORT || 5000;
+// const PORT = process.env.PORT || 5000;
 
 
 // Starting our webserver and putting it all together
 const app = express();
+var server = https.createServer(options, app);
+
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
-app.set('port', PORT);
+// app.set('port', PORT);
 app.set('view engine', 'ejs');
-app.listen(app.get('port'));
+// app.listen(app.get('port'));
+
+server.listen(serverPort, function() {
+  console.log('server up and running at %s port', serverPort);
+});
 // app.use(bodyParser.json());
-console.log("I'm wating for you @" + PORT);
+// console.log("I'm wating for you @" + PORT);
 
 // index. Let's say something fun
 app.get('/', function (req, res) {
